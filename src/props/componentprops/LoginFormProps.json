@@ -12,7 +12,8 @@
             },
             "formtextarg":{
                 "children":""
-            }
+            },
+            "key":"name"
         },{
             "arg":{
                 "disabled":false
@@ -21,11 +22,12 @@
                 "children":"password"
             },
             "inputarg":{
-                "type":"text"
+                "type":"password"
             },
             "formtextarg":{
                 "children":""
-            }
+            },
+            "key":"pwd"
         }
     ],
     "button":{

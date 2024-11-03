@@ -5,9 +5,9 @@ import { StartPage,LoginPage,HomePage } from './pages';
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<StartPage />} />
       <Route path="/login" element={<LoginPage/>}  />
       <Route path="/home" element={<HomePage />} />
+      <Route path="/*" element={<LoginPage />} />
     </Routes>
   );
 }
