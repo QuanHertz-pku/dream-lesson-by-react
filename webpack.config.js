@@ -23,12 +23,25 @@ module.exports = {
             // babel-loader is a loader that allows us to use ES6 syntax
           loader: 'babel-loader',
         },
-      },
+      },{
+        // 匹配 .json 文件
+        test: /\.json$/,
+        
+        // 告诉 Webpack 将 JSON 文件视为模块并解析其内容
+        type: 'json'
+      },{
+        // 匹配所有 .css 文件
+        test: /\.css$/,
+        use: [
+          'style-loader', // 将 CSS 插入到 DOM 中
+          'css-loader'    // 处理 CSS 文件中的 `@import` 和 `url()` 等
+        ]
+      }
     ],
   },
   resolve: { 
     //it means if your import target is Hello.js you can just writ Hello
-    extensions: ['.js', '.jsx','json','css'],
+    extensions: ['.js', '.jsx','.json','.css'],
     //if you want to set the alias for your project,you can do it here
     alias: {
       '@': path.resolve(__dirname, 'src'),
