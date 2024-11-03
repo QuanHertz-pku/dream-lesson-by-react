@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client'; // 从 react-dom/client 导入 createRo
 import { BrowserRouter } from 'react-router-dom';
 
 import "bootstrap/dist/css/bootstrap.min.css"
+import 'overlayscrollbars/overlayscrollbars.css';
 
 
 import App from './App';

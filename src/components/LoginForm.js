@@ -9,20 +9,18 @@ import {
     Card
 } from 'reactstrap'
 
-import LoginFormProps from '@/props/componentprops/LoginFormProps'
 import CenterContainer from './CustomContainer/CenterContainer';
 
-const {formgroups,button,card} = LoginFormProps;
-function LoginForm(){
+function LoginForm(props){
 
     return (
         <>
         <CenterContainer>
-            <Card {...card}>
+            <Card {...props.card}>
                 <h3>SweetHome</h3>
                 <Form>
                     {
-                        formgroups.map((item,index)=>{
+                        props.formgroups.map((item,index)=>{
                             return (
                                 <FormGroup key={index} {...item.arg}>
                                     <Label {...item.labelarg}></Label>
@@ -32,7 +30,7 @@ function LoginForm(){
                             )
                         })
                     }
-                    <Button {...button}></Button>
+                    <Button {...props.button}></Button>
                 </Form>
             </Card>
         </CenterContainer>

@@ -4,11 +4,12 @@ import {
     LoginForm
 } from "@/components";
 
-function LoginPage({props}){
+import LoginFormProps from '@/props/componentprops/LoginFormProps'
+function LoginPage({}){
 
     return(
         <div>
-            <LoginForm></LoginForm>
+            <LoginForm {...LoginFormProps}></LoginForm>
         </div>
     )
 }
