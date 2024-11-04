@@ -58,7 +58,7 @@ module.exports = {
     },//Now we use the newer configuration of webpack5 ^
     //contentBase: path.join(__dirname, 'dist'), //this is the path of our server
     compress: true, //use compress to imporve the speed
-    port: 3000, //here we can dicide our port
+    port: 3001, //here we can dicide our port
     historyApiFallback: true, // 支持路由重写
   },
 };
