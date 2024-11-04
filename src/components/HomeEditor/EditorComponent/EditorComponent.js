@@ -5,14 +5,15 @@ import List from '@editorjs/list';
 import Checklist from '@editorjs/checklist';
 
 import ReadFileServer from '../../../servers/FileServer/ReadFileServer';
+import SaveFileServer from '../../../servers/FileServer/SaveFileServer';
 
-function EditorComponent(props) {
-    const editorInstance = useRef(null); // 使用 useRef 创建 editorInstance
-    const [content, setContent] = useState({ filecontent: null });
+function EditorComponent({ files, selectedFile }) {
+    const editorInstance = useRef(null);
+    const [content, setContent] = useState(null);
 
     useEffect(() => {
-        // 初始化 Editor.js 实例
-        if (!editorInstance.current) {
+        // 初始化 Editor.js 实例，只有当 files 和 selectedFile 有效时才初始化
+        if (files && files[selectedFile] && !editorInstance.current) {
             editorInstance.current = new EditorJS({
                 holder: 'editorjs',
                 tools: {
@@ -29,67 +30,79 @@ function EditorComponent(props) {
                         inlineToolbar: true
                     }
                 },
-                onChange: async () => {
-                    try {
-                        const outputData = await editorInstance.current.save();
-                        console.log('Auto-saving data: ', outputData);
-                    } catch (error) {
-                        console.error('Auto-saving failed: ', error);
-                    }
-                },
+                onChange: handleAutoSave,
             });
         }
 
         // 清理函数：在组件卸载时销毁 Editor.js 实例
         return () => {
-            if (editorInstance.current && editorInstance.current.destroy) {
+            if (editorInstance.current) {
                 editorInstance.current.destroy();
                 editorInstance.current = null;
             }
         };
-    }, []); // 这个 useEffect 只运行一次，用于初始化和清理 Editor.js 实例
+    }, [files, selectedFile]);
 
     useEffect(() => {
-        // 当 props.files 或 props.selectedFile 变化时，获取新的文件内容
-        const fetchFileData = async () => {
-            if (Array.isArray(props.files) && props.files.length > 0 && props.files[props.selectedFile]) {
-                const fileId = props.files[props.selectedFile].id;
-                console.log("Selected file ID:", fileId);
-                try {
-                    const response = await ReadFileServer(fileId);
-
-                    // 确保响应数据符合 EditorJS 数据格式
-                    if (response && response.filecontent && Array.isArray(response.filecontent.blocks)) {
-                        setContent({ filecontent: response.filecontent });
-                    } else {
-                        console.error("Invalid file content format");
-                    }
-                } catch (error) {
-                    console.error("Error fetching file content:", error);
-                }
-            }
-        };
-
-        fetchFileData();
-    }, [props.files, props.selectedFile]); // 当 files 或 selectedFile 改变时重新获取内容
-
-    useEffect(() => {
-        // 当 content 改变时，将新的内容渲染到 Editor.js 中
-        console.log("Updated content:", content);
-        if (editorInstance.current && content.filecontent) {
-            // 检查 blocks 是否存在
-            if (editorInstance.current.blocks && typeof editorInstance.current.blocks.render === 'function') {
-                editorInstance.current.blocks.render(content.filecontent);
-            } else {
-                console.error("EditorJS blocks.render is not available.");
-            }
+        // 每当文件或选中文件发生变化时，获取新的文件内容
+        if (files && files[selectedFile]) {
+            fetchFileData(files[selectedFile].id);
         }
-    }, [content]); // 当 content 改变时执行
+    }, [files, selectedFile]);
 
-    return (
-        <div>
-            <div id="editorjs"></div>
-        </div>
+    useEffect(() => {
+        // 当内容变更时，将新的内容渲染到 Editor.js 中
+        if (editorInstance.current && content) {
+            editorInstance.current.isReady
+                .then(() => {
+                    editorInstance.current.render(content.filecontent);
+                })
+                .catch(error => console.error("Error rendering content:", error));
+        }
+    }, [content]);
+
+    const fetchFileData = async (fileId) => {
+        try {
+            const response = await ReadFileServer(fileId);
+            if (response && response.filecontent && Array.isArray(response.filecontent.blocks)) {
+                setContent({ filecontent: response.filecontent });
+            } else {
+                console.error("Invalid file content format");
+            }
+        } catch (error) {
+            console.error("Error fetching file content:", error);
+        }
+    };
+
+    const handleAutoSave = async () => {
+        // 确保 editorInstance.current 和 selectedFile 有效
+        if (!editorInstance.current) {
+            console.warn("Auto-save skipped: editor instance is missing.");
+            return;
+        }
+        if (!files || !files[selectedFile]) {
+            console.warn("Auto-save skipped: file information is missing.");
+            return;
+        }
+
+        try {
+            const outputData = await editorInstance.current.save();
+            console.log('Auto-saving data: ', outputData);
+            const fileId = files[selectedFile].id;
+            if (fileId) {
+                SaveFileServer(fileId, outputData);
+            } else {
+                console.warn("Auto-save skipped: file ID is missing.");
+            }
+        } catch (error) {
+            console.error('Auto-saving failed:', error);
+        }
+    };
+
+    return files && files[selectedFile] ? (
+        <div id="editorjs"></div>
+    ) : (
+        <div>Loading...</div> // 如果 files 数据未加载时，显示加载状态
     );
 }
 
