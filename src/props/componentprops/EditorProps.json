@@ -1,17 +1,17 @@
 {
     "files":[
         {
-            "title":"test",
-            "content":"test"
+            "filename":"test",
+            "id":"test"
         },{
-            "title":"test2",
-            "content":"test2"
+            "filename":"test2",
+            "id":"test2"
         },{
-            "title":"test3",
-            "content":"test3"
+            "filename":"test3",
+            "id":"test3"
         },{
-            "title":"test4",
-            "content":"test4"
+            "filename":"test4",
+            "id":"test4"
         }
     ]
 }

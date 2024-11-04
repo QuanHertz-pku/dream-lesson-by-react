@@ -12,6 +12,7 @@
   "description": "",
   "dependencies": {
     "@babel/plugin-transform-react-jsx": "^7.25.9",
+    "@editorjs/checklist": "^1.6.0",
     "@editorjs/editorjs": "^2.30.6",
     "@editorjs/header": "^2.8.8",
     "@editorjs/list": "^1.10.0",

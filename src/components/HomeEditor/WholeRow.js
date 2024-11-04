@@ -10,7 +10,7 @@ import EditorCol from './EditorCol';
 function WholeRow(props) {
     const [selectedFile,setselectedFile] = useState(0);
     useEffect(()=>{
-        console.log(selectedFile)
+        console.log("wholerow",props)
     },[selectedFile])
     return (
         <FillContainer>

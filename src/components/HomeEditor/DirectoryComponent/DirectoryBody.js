@@ -23,7 +23,7 @@ function DirectoryBody(props) {
                                         }
                                     }
                                 >
-                                    {item.title}
+                                    {item.filename}
                                 </ListGroupItem>
                             )
                         })
