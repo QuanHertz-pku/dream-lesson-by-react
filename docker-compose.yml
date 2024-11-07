@@ -1,0 +1,46 @@
+version: '3'
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend_container
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: backend_container
+    environment:
+      - MONGO_URL=mongodb://hertz:Hertz5201314@mongo:27017/sweethome
+    ports:
+      - "8000:8000"
+    networks:
+      - app-network
+    depends_on:
+      - mongo
+
+
+  mongo:
+    image: mongodb/mongodb-community-server:latest
+    container_name: mongo_container
+    volumes:
+      - mongo-data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
